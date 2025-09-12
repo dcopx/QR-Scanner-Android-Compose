@@ -1,5 +1,6 @@
 package com.uecesar.qrscanner.data.repositoryImpl
 
+import com.example.qrscanner.domain.model.LoginRequest
 import com.uecesar.qrscanner.data.remote.api.QrCodeApi
 import com.uecesar.qrscanner.domain.model.PaginatedResponse
 import com.uecesar.qrscanner.domain.model.QrCode
@@ -13,6 +14,14 @@ class QrCodeRepositoryImpl @Inject constructor(
     private val api: QrCodeApi,
     private val tokenManager: TokenManager
 ) : QrCodeRepository {
+    override suspend fun login(username: String, password: String): Boolean {
+        val response = api.login(LoginRequest(username, password))
+        if (response.isSuccessful) {
+            response.body()?.token?.let {  }
+            return true
+        }
+        return false
+    }
 
     override suspend fun getAllQrCodes(page: Int, size: Int): Result<PaginatedResponse<QrCode>> {
         return try {

@@ -1,5 +1,7 @@
 package com.uecesar.qrscanner.data.remote.api
 
+import com.example.qrscanner.domain.model.LoginRequest
+import com.example.qrscanner.domain.model.LoginResponse
 import com.uecesar.qrscanner.domain.model.ApiResponse
 import com.uecesar.qrscanner.domain.model.PaginatedResponse
 import com.uecesar.qrscanner.domain.model.QrCode
@@ -15,6 +17,10 @@ import retrofit2.http.Query
 
 interface QrCodeApi {
 
+    @POST("auth/login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): Response<LoginResponse>
     @GET("api/v1/qr-codes")
     suspend fun getAllQrCodes(
         @Query("page") page: Int = 0,

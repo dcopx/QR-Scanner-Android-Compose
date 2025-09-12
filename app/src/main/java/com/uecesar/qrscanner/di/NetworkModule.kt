@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import okhttp3.CertificatePinner
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -42,7 +43,12 @@ object NetworkModule {
             }
         }
 
+        val certificatePinner = CertificatePinner.Builder()
+            .add("tu-dominio.com", "sha256/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=")
+            .build()
+
         return OkHttpClient.Builder()
+            .certificatePinner(certificatePinner)
             .addInterceptor(authInterceptor)
             .addInterceptor(securityInterceptor)
             .addInterceptor(loggingInterceptor)
