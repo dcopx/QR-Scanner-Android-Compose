@@ -25,11 +25,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun getAllQrCodes(page: Int, size: Int): Result<PaginatedResponse<QrCode>> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.getAllQrCodes(page, size, "Bearer $token")
+            val response = api.getAllQrCodes(page, size, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 response.body()?.let { body ->
@@ -45,11 +41,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun getQrCodeById(id: String): Result<QrCode> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.getQrCodeById(id, "Bearer $token")
+            val response = api.getQrCodeById(id, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 response.body()?.data?.let { qrCode ->
@@ -65,11 +57,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun createQrCode(qrCode: QrCode): Result<QrCode> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.createQrCode(qrCode, "Bearer $token")
+            val response = api.createQrCode(qrCode, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 response.body()?.data?.let { createdQrCode ->
@@ -85,11 +73,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun updateQrCode(id: String, qrCode: QrCode): Result<QrCode> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.updateQrCode(id, qrCode, "Bearer $token")
+            val response = api.updateQrCode(id, qrCode, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 response.body()?.data?.let { updatedQrCode ->
@@ -105,11 +89,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun deleteQrCode(id: String): Result<Unit> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.deleteQrCode(id, "Bearer $token")
+            val response = api.deleteQrCode(id, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 Result.success(Unit)
@@ -123,11 +103,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllQrCodes(): Result<Unit> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.deleteAllQrCodes("Bearer $token")
+            val response = api.deleteAllQrCodes("Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 Result.success(Unit)
@@ -141,11 +117,7 @@ class QrCodeRepositoryImpl @Inject constructor(
 
     override suspend fun searchQrCodes(query: String, page: Int, size: Int): Result<PaginatedResponse<QrCode>> {
         return try {
-            val token = tokenManager.getAccessToken() ?: return Result.failure(
-                Exception("Authentication required")
-            )
-
-            val response = api.searchQrCodes(query, page, size, "Bearer $token")
+            val response = api.searchQrCodes(query, page, size, "Bearer ${tokenManager.accessToken}")
 
             if (response.isSuccessful) {
                 response.body()?.let { body ->

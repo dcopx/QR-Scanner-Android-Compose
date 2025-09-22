@@ -18,7 +18,7 @@ class AuthInterceptor @Inject constructor(
             return chain.proceed(originalRequest)
         }
 
-        val token = tokenManager.getAccessToken()
+        val token = tokenManager.accessToken
 
         val authenticatedRequest = if (token != null) {
             originalRequest.newBuilder()
@@ -32,7 +32,7 @@ class AuthInterceptor @Inject constructor(
 
         // Handle 401 Unauthorized
         if (response.code == 401) {
-            tokenManager.clearTokens()
+            //tokenManager.clearTokens()
             // Redirect to login or refresh token
         }
 

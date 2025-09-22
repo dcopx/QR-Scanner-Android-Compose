@@ -15,7 +15,7 @@ class ScannerViewModel @Inject constructor(
     private val scanQrCodeUseCase: ScanQrCodeUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ScannerUiState>(ScannerUiState.Idle)
+    private val _uiState = MutableStateFlow<ScannerUiState>(ScannerUiState.InitialState)
     val uiState: StateFlow<ScannerUiState> = _uiState.asStateFlow()
 
     fun onQrCodeScanned(content: String) {
@@ -35,6 +35,6 @@ class ScannerViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _uiState.value = ScannerUiState.Idle
+        _uiState.value = ScannerUiState.InitialState
     }
 }
