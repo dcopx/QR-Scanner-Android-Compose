@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
@@ -43,8 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.uecesar.qrscanner.presentation.components.CustomAppBar
 import com.uecesar.qrscanner.presentation.ui.enumerable.QrCodeType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,13 +60,14 @@ fun GenerateScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Generate QR") },
-                navigationIcon = {
+            CustomAppBar(
+                title = "Generate QR",
+                onNavigateBack = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
+
             )
         }
     ) { paddingValues ->
@@ -97,10 +100,6 @@ fun GenerateScreen(
                                         QrCodeType.EMAIL -> Icons.Default.Email
                                         QrCodeType.PHONE -> Icons.Default.Phone
                                         QrCodeType.URL -> Icons.Default.Link
-                                        QrCodeType.WIFI -> Icons.Default.Wifi
-                                        QrCodeType.CONTACT -> Icons.Default.Person
-                                        QrCodeType.LOCATION -> Icons.Default.LocationOn
-                                        QrCodeType.SMS -> Icons.Default.Sms
                                         else -> Icons.Default.TextFields
                                     },
                                     contentDescription = null,
@@ -125,18 +124,6 @@ fun GenerateScreen(
 //                    }
 //                    QrCodeType.URL -> UrlForm { url ->
 //                        viewModel.generateQrCode(QrCodeContent.Url(url))
-//                    }
-//                    QrCodeType.WIFI -> WifiForm { ssid, password, security ->
-//                        viewModel.generateQrCode(QrCodeContent.Wifi(ssid, password, security))
-//                    }
-//                    QrCodeType.CONTACT -> ContactForm { name, phone, email ->
-//                        viewModel.generateQrCode(QrCodeContent.Contact(name, phone, email))
-//                    }
-//                    QrCodeType.LOCATION -> LocationForm { lat, lng ->
-//                        viewModel.generateQrCode(QrCodeContent.Location(lat, lng))
-//                    }
-//                    QrCodeType.SMS -> SmsForm { number, message ->
-//                        viewModel.generateQrCode(QrCodeContent.Sms(number, message))
 //                    }
 //                }
 //            }

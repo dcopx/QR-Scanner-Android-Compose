@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteSweep
@@ -23,7 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.uecesar.qrscanner.domain.model.QrCode
+import com.uecesar.qrscanner.presentation.components.CustomAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,9 +51,9 @@ fun HistoryScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("History") },
-                navigationIcon = {
+            CustomAppBar(
+                title = "History",
+                onNavigateBack = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
@@ -63,104 +66,90 @@ fun HistoryScreen(
             )
         }
     ) { paddingValues ->
-        when (val state = uiState) {
-            is HistoryUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            when (val state = uiState) {
+                is HistoryUiState.Loading -> { CircularProgressIndicator() }
+                is HistoryUiState.Success -> { SuccessState(qrCodes, viewModel) }
+                is HistoryUiState.Error -> { ErrorState(state, viewModel) }
             }
+        }
+    }
+}
 
-            is HistoryUiState.Success -> {
-                if (qrCodes.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                Icons.Default.QrCode,
-                                contentDescription = null,
-                                modifier = Modifier.size(64.dp),
-                                tint = MaterialTheme.colorScheme.outline
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                "No QR codes yet",
-                                style = MaterialTheme.typography.headlineSmall,
-                                color = MaterialTheme.colorScheme.outline
-                            )
-                            Text(
-                                "Start scanning or generating QR codes",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.outline
-                            )
-                        }
-                    }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-//                        items(
-//                            items = qrCodes,
-//                            key = { it.id ?: "" }
-//                        ) { qrCode ->
-//                            QrCodeItem(
-//                                qrCode = qrCode,
-//                                onDeleteClick = { viewModel.deleteQrCode(qrCode.id ?: "") },
-//                                modifier = Modifier.fillMaxWidth()
-//                            )
-//                        }
-                    }
-                }
+@Composable
+private fun SuccessState(qrCodes: List<QrCode>, viewModel: HistoryViewModel){
+    if (qrCodes.isEmpty()) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Default.QrCode,
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.outline
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "No QR codes yet",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.outline
+            )
+            Text(
+                "Start scanning or generating QR codes",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.outline
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = qrCodes,
+                key = { it.id ?: "" }
+            ) { qrCode ->
+                QrCodeItem(
+                    qrCode = qrCode,
+                    onDeleteClick = { viewModel.deleteQrCode(qrCode.id ?: "") },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
+        }
+    }
+}
 
-            is HistoryUiState.Error -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            Icons.Default.Error,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            "Error loading history",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Text(
-                            state.message,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(onClick = { viewModel.loadQrCodes() }) {
-                            Text("Retry")
-                        }
-                    }
-                }
-            }
+@Composable
+private fun ErrorState(state: HistoryUiState.Error, viewModel: HistoryViewModel) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Default.Error,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Error loading history",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.error
+        )
+        Text(
+            state.message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.outline
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { viewModel.loadQrCodes() }) {
+            Text("Retry")
         }
     }
 }

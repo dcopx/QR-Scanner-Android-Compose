@@ -12,10 +12,6 @@ class QrContentParser @Inject constructor() {
         return when {
             content.startsWith("mailto:", ignoreCase = true) -> QrCodeType.EMAIL
             content.startsWith("tel:", ignoreCase = true) -> QrCodeType.PHONE
-            content.startsWith("sms:", ignoreCase = true) -> QrCodeType.SMS
-            content.startsWith("geo:", ignoreCase = true) -> QrCodeType.LOCATION
-            content.startsWith("WIFI:", ignoreCase = true) -> QrCodeType.WIFI
-            content.contains("BEGIN:VCARD", ignoreCase = true) -> QrCodeType.CONTACT
             isUrl(content) -> QrCodeType.URL
             else -> QrCodeType.TEXT
         }

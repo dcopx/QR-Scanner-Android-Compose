@@ -4,9 +4,5 @@ enum class QrCodeType {
     TEXT,
     EMAIL,
     PHONE,
-    URL,
-    WIFI,
-    CONTACT,
-    LOCATION,
-    SMS
+    URL
 }

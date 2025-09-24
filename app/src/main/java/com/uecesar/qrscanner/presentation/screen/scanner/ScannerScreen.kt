@@ -28,7 +28,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +42,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.uecesar.qrscanner.presentation.components.CameraPreview
+import com.uecesar.qrscanner.presentation.components.CustomAppBar
 import com.uecesar.qrscanner.presentation.components.PermissionDeniedContent
 import com.uecesar.qrscanner.presentation.components.ScanningOverlay
 
@@ -63,7 +63,19 @@ fun ScannerScreen(
     }
 
     Scaffold(
-        topBar = { CustomAppBar(onNavigateToHistory, onNavigateToGenerate) },
+        topBar = {
+            CustomAppBar(
+                title = "QR Scanner",
+                actions =  {
+                    IconButton(onClick = onNavigateToHistory) {
+                        Icon(Icons.Default.History, contentDescription = "History")
+                    }
+                    IconButton(onClick = onNavigateToGenerate) {
+                        Icon(Icons.Default.QrCode, contentDescription = "Generate")
+                    }
+                }
+            )
+        },
         bottomBar = { CustomBottomAppBar(onNavigateToHistory, onNavigateToGenerate) }
     ) { paddingValues ->
         Box(
@@ -90,25 +102,6 @@ fun ScannerScreen(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CustomAppBar(
-    onNavigateToHistory: () -> Unit,
-    onNavigateToGenerate: () -> Unit
-){
-    TopAppBar(
-        title = { Text("QR Scanner") },
-        actions = {
-            IconButton(onClick = onNavigateToHistory) {
-                Icon(Icons.Default.History, contentDescription = "History")
-            }
-            IconButton(onClick = onNavigateToGenerate) {
-                Icon(Icons.Default.QrCode, contentDescription = "Generate")
-            }
-        }
-    )
 }
 
 @Composable
