@@ -15,16 +15,6 @@ sealed class QrCodeContent {
     }
 
     @Serializable
-    data class Email(
-        val email: String,
-        val subject: String = "",
-        val body: String = ""
-    ) : QrCodeContent() {
-        override fun toRawString() = "mailto:$email?subject=$subject&body=$body"
-        override fun getType() = QrCodeType.EMAIL
-    }
-
-    @Serializable
     data class Phone(val number: String) : QrCodeContent() {
         override fun toRawString() = "tel:$number"
         override fun getType() = QrCodeType.PHONE

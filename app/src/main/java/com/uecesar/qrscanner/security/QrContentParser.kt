@@ -10,7 +10,6 @@ class QrContentParser @Inject constructor() {
 
     fun parseType(content: String): QrCodeType {
         return when {
-            content.startsWith("mailto:", ignoreCase = true) -> QrCodeType.EMAIL
             content.startsWith("tel:", ignoreCase = true) -> QrCodeType.PHONE
             isUrl(content) -> QrCodeType.URL
             else -> QrCodeType.TEXT

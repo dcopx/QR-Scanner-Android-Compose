@@ -89,6 +89,6 @@ internal fun QrCodeItem(
 @Preview(showBackground = true)
 @Composable
 private fun Previa(){
-    val qrCode = QrCode("", "Contenido QR", QrCodeType.LOCATION)
+    val qrCode = QrCode("", "Contenido QR", QrCodeType.URL)
     QrCodeItem(qrCode = qrCode){}
 }
