@@ -13,14 +13,14 @@ class ScanQrCodeUseCase @Inject constructor(
     private val contentParser: QrContentParser,
     private val securityValidator: SecurityValidator
 ) {
-    suspend operator fun invoke(rawContent: String): Result<QrCode> {
+    suspend operator fun invoke(content: String): Result<QrCode> {
         return try {
             // Validate content for security
-            if (!securityValidator.isContentSafe(rawContent)) {
+            if (!securityValidator.isContentSafe(content)) {
                 return Result.failure(SecurityException("Potentially malicious content detected"))
             }
 
-            val sanitizedContent = securityValidator.sanitizeContent(rawContent)
+            val sanitizedContent = securityValidator.sanitizeContent(content)
             val type = contentParser.parseType(sanitizedContent)
 
             val qrCode = QrCode(

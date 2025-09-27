@@ -41,10 +41,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.uecesar.qrscanner.presentation.components.CameraPreview
+import com.uecesar.qrscanner.presentation.components.CameraView
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
 import com.uecesar.qrscanner.presentation.components.PermissionDeniedContent
 import com.uecesar.qrscanner.presentation.components.ScanningOverlay
+
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -84,10 +85,9 @@ fun ScannerScreen(
                 .padding(paddingValues)
         ) {
             if (cameraPermissionState.status.isGranted) {
-                CameraPreview { content -> viewModel.onQrCodeScanned(content) }
+                CameraView { content -> viewModel.onQrCodeScanned(content) }
                 ScanningOverlay()
 
-                // Status message
                 when (val state = uiState) {
                     is ScannerUiState.Loading -> { LoadingState(Modifier.align(Alignment.BottomCenter)) }
                     is ScannerUiState.Success -> { SuccessState(Modifier.align(Alignment.BottomCenter), state) }

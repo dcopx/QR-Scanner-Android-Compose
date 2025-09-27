@@ -31,19 +31,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.uecesar.qrscanner.domain.model.QrCodeContent
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
-import com.uecesar.qrscanner.presentation.components.PhoneForm
 import com.uecesar.qrscanner.presentation.components.TextForm
-import com.uecesar.qrscanner.presentation.components.UrlForm
 import com.uecesar.qrscanner.presentation.ui.enumerable.QrCodeType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +49,7 @@ fun GenerateScreen(
     viewModel: GenerateViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedType by remember { mutableStateOf(QrCodeType.TEXT) }
+    val selectedType by viewModel.selectedType
 
     Scaffold(
         topBar = {
@@ -81,16 +77,27 @@ fun GenerateScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
             }
-            item { FilterChipList(viewModel) }
+            item {
+                FilterChipList(selectedType){ viewModel.onSelectedTypeChange(selectedType) }
+            }
             item {
                 when (selectedType) {
-                    QrCodeType.TEXT -> TextForm { content ->
+                    QrCodeType.TEXT -> TextForm(
+                        keyboardType = KeyboardType.Text,
+                        label = "Texto"
+                    ) { content ->
                         viewModel.generateQrCode(QrCodeContent.Text(content))
                     }
-                    QrCodeType.PHONE -> PhoneForm { number ->
+                    QrCodeType.PHONE -> TextForm(
+                        keyboardType = KeyboardType.Phone,
+                        label = "Número de teléfono"
+                    ) { number ->
                         viewModel.generateQrCode(QrCodeContent.Phone(number))
                     }
-                    QrCodeType.URL -> UrlForm { url ->
+                    QrCodeType.URL -> TextForm(
+                        keyboardType = KeyboardType.Uri,
+                        label = "URL"
+                    ) { url ->
                         viewModel.generateQrCode(QrCodeContent.Url(url))
                     }
                 }
@@ -108,15 +115,13 @@ fun GenerateScreen(
 }
 
 @Composable
-private fun FilterChipList(viewModel: GenerateViewModel){
-    var selectedType by remember { mutableStateOf(QrCodeType.TEXT) }
-
+private fun FilterChipList( selectedType: QrCodeType, onSelectedTypeChange: () -> Unit){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(QrCodeType.entries.toTypedArray()) { type ->
             FilterChip(
-                onClick = { selectedType = type },
+                onClick = onSelectedTypeChange,
                 label = { Text(type.name) },
                 selected = selectedType == type,
                 leadingIcon = {
