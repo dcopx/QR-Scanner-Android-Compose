@@ -19,8 +19,6 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +31,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -43,9 +40,9 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.uecesar.qrscanner.presentation.components.CameraView
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
+import com.uecesar.qrscanner.presentation.components.CustomCard
 import com.uecesar.qrscanner.presentation.components.PermissionDeniedContent
 import com.uecesar.qrscanner.presentation.components.ScanningOverlay
-
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -119,18 +116,6 @@ private fun CustomBottomAppBar(
             AppBarItem(Icons.Default.QrCode, "Generate") {onNavigateToGenerate }
         }
     }
-}
-
-@Composable
-private fun CustomCard(
-    modifier: Modifier = Modifier,
-    containerColor: Color,
-    content: @Composable () -> Unit
-){
-    Card(
-        modifier = modifier.padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor)
-    ) { content() }
 }
 
 @Composable
