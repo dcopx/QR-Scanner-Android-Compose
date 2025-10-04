@@ -35,6 +35,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.uecesar.qrscanner.domain.model.QrCode
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
+import com.uecesar.qrscanner.presentation.components.CustomBottomBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,18 +54,15 @@ fun HistoryScreen(
         topBar = {
             CustomAppBar(
                 title = "History",
-                onNavigateBack = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
+                onNavigateBack = onNavigateBack,
                 actions = {
                     IconButton(onClick = { viewModel.deleteAllQrCodes() }) {
                         Icon(Icons.Default.DeleteSweep, contentDescription = "Delete All")
                     }
                 }
             )
-        }
+        },
+        bottomBar = { CustomBottomBar() }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -128,6 +126,7 @@ private fun SuccessState(qrCodes: List<QrCode>, viewModel: HistoryViewModel){
 @Composable
 private fun ErrorState(state: HistoryUiState.Error, viewModel: HistoryViewModel) {
     Column(
+        modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(

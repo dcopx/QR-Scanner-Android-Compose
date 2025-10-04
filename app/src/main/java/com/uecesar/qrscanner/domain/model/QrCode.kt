@@ -10,3 +10,8 @@ data class QrCode(
     val isGenerated: Boolean = false,
     val userId: String? = null
 )
+
+val qrCodesResponse: List<QrCode> = listOf(
+    QrCode(id = "1", content = "https://www.google.com", type = QrCodeType.URL),
+    QrCode(id = "2", content = "Hello, World!", type = QrCodeType.TEXT),
+)

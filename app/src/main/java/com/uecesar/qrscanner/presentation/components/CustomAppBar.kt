@@ -1,6 +1,10 @@
 package com.uecesar.qrscanner.presentation.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -10,13 +14,20 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun CustomAppBar(
     title: String,
-    onNavigateBack: (@Composable () -> Unit)? = null,
+    onNavigateBack: (() -> Unit)? = null,
     actions: (@Composable () -> Unit)? = null
 ){
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
-            onNavigateBack
+            if (onNavigateBack != null) {
+                IconButton(onClick = { onNavigateBack() }){
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
         },
         actions = {
             actions
@@ -28,5 +39,5 @@ fun CustomAppBar(
 @Preview(showBackground = true)
 @Composable
 private fun Previa(){
-    CustomAppBar(title = "Title")
+    CustomAppBar(title = "Title", onNavigateBack = {})
 }

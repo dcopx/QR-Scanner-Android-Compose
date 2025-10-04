@@ -3,6 +3,7 @@ package com.uecesar.qrscanner.presentation.screen.history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uecesar.qrscanner.domain.model.QrCode
+import com.uecesar.qrscanner.domain.model.qrCodesResponse
 import com.uecesar.qrscanner.domain.repository.QrCodeRepository
 import com.uecesar.qrscanner.domain.useCase.DeleteQrCodeUseCase
 import com.uecesar.qrscanner.domain.useCase.GetQrCodesUseCase
@@ -30,31 +31,35 @@ class HistoryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = HistoryUiState.Loading
 
-            getQrCodesUseCase(page)
-                .onSuccess { response ->
-                    _qrCodes.value = response.data
-                    _uiState.value = HistoryUiState.Success
-                }
-                .onFailure { error ->
-                    _uiState.value = HistoryUiState.Error(
-                        error.message ?: "Failed to load QR codes"
-                    )
-                }
+//            getQrCodesUseCase(page)
+//                .onSuccess { response ->
+//                    _qrCodes.value = response.data
+//                    _uiState.value = HistoryUiState.Success
+//                }
+//                .onFailure { error ->
+//                    _uiState.value = HistoryUiState.Error(
+//                        error.message ?: "Failed to load QR codes"
+//                    )
+//                }
+            _qrCodes.value = qrCodesResponse
+            _uiState.value = HistoryUiState.Success
         }
     }
 
     fun deleteQrCode(id: String) {
         viewModelScope.launch {
-            deleteQrCodeUseCase(id)
-                .onSuccess {
-                    // Refresh list
-                    loadQrCodes()
-                }
-                .onFailure { error ->
-                    _uiState.value = HistoryUiState.Error(
-                        error.message ?: "Failed to delete QR code"
-                    )
-                }
+//            deleteQrCodeUseCase(id)
+//                .onSuccess {
+//                    // Refresh list
+//                    loadQrCodes()
+//                }
+//                .onFailure { error ->
+//                    _uiState.value = HistoryUiState.Error(
+//                        error.message ?: "Failed to delete QR code"
+//                    )
+//                }
+            _qrCodes.value = qrCodesResponse.filter { it.id != id }
+            _uiState.value = HistoryUiState.Success
         }
     }
 

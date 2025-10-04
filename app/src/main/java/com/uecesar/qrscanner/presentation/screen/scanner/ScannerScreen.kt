@@ -1,14 +1,11 @@
 package com.uecesar.qrscanner.presentation.screen.scanner
 
 import android.Manifest
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,8 +15,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.QrCode
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,8 +27,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,6 +35,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.uecesar.qrscanner.presentation.components.CameraView
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
+import com.uecesar.qrscanner.presentation.components.CustomBottomBar
 import com.uecesar.qrscanner.presentation.components.CustomCard
 import com.uecesar.qrscanner.presentation.components.PermissionDeniedContent
 import com.uecesar.qrscanner.presentation.components.ScanningOverlay
@@ -49,8 +43,6 @@ import com.uecesar.qrscanner.presentation.components.ScanningOverlay
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ScannerScreen(
-    onNavigateToHistory: () -> Unit,
-    onNavigateToGenerate: () -> Unit,
     viewModel: ScannerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -65,18 +57,10 @@ fun ScannerScreen(
     Scaffold(
         topBar = {
             CustomAppBar(
-                title = "QR Scanner",
-                actions =  {
-                    IconButton(onClick = onNavigateToHistory) {
-                        Icon(Icons.Default.History, contentDescription = "History")
-                    }
-                    IconButton(onClick = onNavigateToGenerate) {
-                        Icon(Icons.Default.QrCode, contentDescription = "Generate")
-                    }
-                }
+                title = "QR Scanner"
             )
         },
-        bottomBar = { CustomBottomBar(onNavigateToHistory, onNavigateToGenerate) }
+        bottomBar = { CustomBottomBar() }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -99,23 +83,6 @@ fun ScannerScreen(
                     cameraPermissionState.launchPermissionRequest()
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun CustomBottomBar(
-    onNavigateToHistory: () -> Unit,
-    onNavigateToGenerate: () -> Unit
-) {
-    BottomAppBar {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            AppBarItem(Icons.Default.History, "History") { onNavigateToHistory() }
-            AppBarItem(Icons.Default.QrCodeScanner, "Scan") { }
-            AppBarItem(Icons.Default.QrCode, "Generate") { onNavigateToGenerate() }
         }
     }
 }
@@ -207,27 +174,6 @@ private fun ErrorState(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
-        }
-    }
-}
-
-@Composable
-private fun AppBarItem(icon: ImageVector, label: String, onClick: () -> Unit){
-    Box(
-        modifier = Modifier
-            .height(45.dp)
-            .width(50.dp)
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(icon, contentDescription = null)
-            Text(label, style = MaterialTheme.typography.labelSmall)
         }
     }
 }
