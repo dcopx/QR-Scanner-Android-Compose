@@ -69,16 +69,17 @@ fun GenerateScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Text(
                     "Select QR Code Type",
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
             item {
-                FilterChipList(selectedType){ viewModel.onSelectedTypeChange(selectedType) }
+                FilterChipList(selectedType, viewModel)
             }
             item {
                 when (selectedType) {
@@ -115,13 +116,13 @@ fun GenerateScreen(
 }
 
 @Composable
-private fun FilterChipList( selectedType: QrCodeType, onSelectedTypeChange: () -> Unit){
+private fun FilterChipList( selectedType: QrCodeType, viewModel: GenerateViewModel){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(QrCodeType.entries.toTypedArray()) { type ->
             FilterChip(
-                onClick = onSelectedTypeChange,
+                onClick = { viewModel.onSelectedTypeChange(type) },
                 label = { Text(type.name) },
                 selected = selectedType == type,
                 leadingIcon = {

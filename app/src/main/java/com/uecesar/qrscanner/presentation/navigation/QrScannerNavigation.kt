@@ -14,20 +14,20 @@ fun QrScannerApp() {
 
     NavHost(
         navController = navController,
-        startDestination = "scanner"
+        startDestination = Routes.GENERATE
     ) {
-        composable("scanner") {
+        composable(Routes.SCANNER) {
             ScannerScreen(
                 onNavigateToHistory = {
-                    navController.navigate("history")
+                    navController.navigate(Routes.HISTORY){ launchSingleTop = true }
                 },
                 onNavigateToGenerate = {
-                    navController.navigate("generate")
+                    navController.navigate(Routes.GENERATE){ launchSingleTop = true }
                 }
             )
         }
 
-        composable("history") {
+        composable(Routes.HISTORY) {
             HistoryScreen(
                 onNavigateBack = {
                     navController.popBackStack()
@@ -35,7 +35,7 @@ fun QrScannerApp() {
             )
         }
 
-        composable("generate") {
+        composable(Routes.GENERATE) {
             GenerateScreen(
                 onNavigateBack = {
                     navController.popBackStack()

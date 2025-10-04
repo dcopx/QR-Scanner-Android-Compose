@@ -1,6 +1,7 @@
 package com.uecesar.qrscanner.presentation.screen.scanner
 
 import android.Manifest
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -74,7 +76,7 @@ fun ScannerScreen(
                 }
             )
         },
-        bottomBar = { CustomBottomAppBar(onNavigateToHistory, onNavigateToGenerate) }
+        bottomBar = { CustomBottomBar(onNavigateToHistory, onNavigateToGenerate) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -102,7 +104,7 @@ fun ScannerScreen(
 }
 
 @Composable
-private fun CustomBottomAppBar(
+private fun CustomBottomBar(
     onNavigateToHistory: () -> Unit,
     onNavigateToGenerate: () -> Unit
 ) {
@@ -111,9 +113,9 @@ private fun CustomBottomAppBar(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            AppBarItem(Icons.Default.History, "History") {onNavigateToHistory}
-            AppBarItem(Icons.Default.QrCodeScanner, "Scan") { /* Handle scan action */ }
-            AppBarItem(Icons.Default.QrCode, "Generate") {onNavigateToGenerate }
+            AppBarItem(Icons.Default.History, "History") { onNavigateToHistory() }
+            AppBarItem(Icons.Default.QrCodeScanner, "Scan") { }
+            AppBarItem(Icons.Default.QrCode, "Generate") { onNavigateToGenerate() }
         }
     }
 }
@@ -211,9 +213,20 @@ private fun ErrorState(
 
 @Composable
 private fun AppBarItem(icon: ImageVector, label: String, onClick: () -> Unit){
-    IconButton(onClick = onClick) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(icon, contentDescription = "History")
+    Box(
+        modifier = Modifier
+            .height(45.dp)
+            .width(50.dp)
+            .clip(MaterialTheme.shapes.small)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(icon, contentDescription = null)
             Text(label, style = MaterialTheme.typography.labelSmall)
         }
     }
