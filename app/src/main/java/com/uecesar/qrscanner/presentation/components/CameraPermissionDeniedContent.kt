@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PermissionDeniedContent(
+fun CameraPermissionDeniedContent(
     modifier: Modifier = Modifier,
     onRequestPermission: () -> Unit
 ) {
@@ -39,7 +39,6 @@ fun PermissionDeniedContent(
             Icon(
                 imageVector = Icons.Default.CameraAlt,
                 contentDescription = null,
-                tint = Color.White,
                 modifier = Modifier.size(64.dp)
             )
 
@@ -60,5 +59,5 @@ fun PermissionDeniedContent(
 @Preview(showBackground = true)
 @Composable
 private fun Previa(){
-    PermissionDeniedContent {  }
+    CameraPermissionDeniedContent {  }
 }

@@ -1,6 +1,5 @@
 package com.uecesar.qrscanner.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
@@ -17,7 +16,7 @@ fun QrScannerApp() {
     CompositionLocalProvider( LocalNavController provides navController ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.HISTORY
+            startDestination = Routes.SCANNER
         ) {
             composable(Routes.SCANNER) {
                 ScannerScreen()
