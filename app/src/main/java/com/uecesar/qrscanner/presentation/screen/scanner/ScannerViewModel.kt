@@ -1,5 +1,8 @@
 package com.uecesar.qrscanner.presentation.screen.scanner
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.uecesar.qrscanner.domain.useCase.ScanQrCodeUseCase
@@ -17,6 +20,20 @@ class ScannerViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<ScannerUiState>(ScannerUiState.InitialState)
     val uiState: StateFlow<ScannerUiState> = _uiState.asStateFlow()
+
+    private val _reloadRequestCameraPermission = mutableIntStateOf(0)
+    val reloadRequestCameraPermission: State<Int> = _reloadRequestCameraPermission
+
+    private val _cameraPermission = mutableStateOf(false)
+    val cameraPermission: State<Boolean> = _cameraPermission
+
+    fun onReloadRequestCameraPermissionIncreased() {
+        _reloadRequestCameraPermission.intValue = _reloadRequestCameraPermission.intValue +1
+    }
+    fun onCameraPermissionChanged(value: Boolean) {
+        _cameraPermission.value = value
+    }
+
 
     fun onQrCodeScanned(content: String) {
         viewModelScope.launch {

@@ -13,6 +13,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uecesar.qrscanner.presentation.ui.theme.QRScannerTheme
 
+/**
+ * Composable para mostrar una card con un color de contenedor personalizado.
+ * @param modifier Modificadores para personalizar la apariencia de la card.
+ * @param containerColor Color de fondo de la card.
+ * @param content Contenido del card.
+ */
 @Composable
 fun CustomCard(
     modifier: Modifier = Modifier,
@@ -20,7 +26,7 @@ fun CustomCard(
     content: @Composable () -> Unit
 ){
     Card(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         )
@@ -33,7 +39,7 @@ fun CustomCard(
 
 @Preview(name = "Dentro del Theme", showBackground = true)
 @Composable
-fun CustomCardPreviewInTheme() {
+private fun Previa() {
     QRScannerTheme(dynamicColor = false){
         CustomCard(containerColor = MaterialTheme.colorScheme.primaryContainer) {
             Text("Previa dentro del theme")

@@ -1,6 +1,5 @@
 package com.uecesar.qrscanner.presentation.screen.scanner
 
-import android.Manifest
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,31 +12,27 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.uecesar.qrscanner.presentation.components.CameraView
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
 import com.uecesar.qrscanner.presentation.components.CustomBottomBar
 import com.uecesar.qrscanner.presentation.components.CustomCard
-import com.uecesar.qrscanner.presentation.components.PermissionDeniedContent
+import com.uecesar.qrscanner.presentation.components.CameraPermissionDeniedContent
+import com.uecesar.qrscanner.presentation.components.RequestCameraPermission
 import com.uecesar.qrscanner.presentation.components.ScanningOverlay
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
@@ -46,13 +41,8 @@ fun ScannerScreen(
     viewModel: ScannerViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
-
-    LaunchedEffect(Unit) {
-        if (!cameraPermissionState.status.isGranted) {
-            cameraPermissionState.launchPermissionRequest()
-        }
-    }
+    val cameraPermission by viewModel.cameraPermission
+    val reloadRequest by viewModel.reloadRequestCameraPermission
 
     Scaffold(
         topBar = {
@@ -62,12 +52,15 @@ fun ScannerScreen(
         },
         bottomBar = { CustomBottomBar() }
     ) { paddingValues ->
+        ValidateCameraPermission(reloadRequest){
+            viewModel.onCameraPermissionChanged(it)
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (cameraPermissionState.status.isGranted) {
+            if (cameraPermission) {
                 CameraView { content -> viewModel.onQrCodeScanned(content) }
                 ScanningOverlay()
 
@@ -79,10 +72,19 @@ fun ScannerScreen(
                 }
 
             } else {
-                PermissionDeniedContent {
-                    cameraPermissionState.launchPermissionRequest()
+                CameraPermissionDeniedContent {
+                    viewModel.onReloadRequestCameraPermissionIncreased()
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ValidateCameraPermission(reloadRequest: Int, onPermissionResult: (Boolean) -> Unit){
+    key(reloadRequest) {
+        RequestCameraPermission { granted ->
+            onPermissionResult(granted)
         }
     }
 }

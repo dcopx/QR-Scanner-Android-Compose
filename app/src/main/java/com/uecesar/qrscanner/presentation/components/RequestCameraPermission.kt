@@ -16,26 +16,27 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.uecesar.qrscanner.presentation.components.dialog.CustomGoToSettingsDialog
 
+/**
+ * Composable que maneja la solicitud de permiso de la cámara, consulta cada vez que se dibuja el componente.
+ * Si ya se ha denegado el permiso mostrará un dialog para ir a la configuración.
+ * @param onPermissionResult Callback que se llama cuando se obtiene el resultado del permiso.
+ */
 @Composable
 fun RequestCameraPermission(
-    onRequestPermission: (granted: Boolean) -> Unit
+    onPermissionResult: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val activity = context as Activity
-
     val permission = Manifest.permission.CAMERA
 
-    // Para mostrar el diálogo "Ir a Configuración"
     var showSettingsDialog by remember { mutableStateOf(false) }
 
-    // Launcher para pedir permiso al sistema
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            onRequestPermission(true)
+            onPermissionResult(true)
         } else {
-            // Detectar negación permanente (Android 13+)
             val permanentlyDenied =
                 !ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
 
@@ -43,26 +44,27 @@ fun RequestCameraPermission(
                 showSettingsDialog = true
             }
 
-            onRequestPermission(false)
+            onPermissionResult(false)
         }
     }
 
-    // Lanzar el permiso la primera vez
     LaunchedEffect(Unit) {
-        val granted = ContextCompat.checkSelfPermission( context, permission ) == PackageManager.PERMISSION_GRANTED
-        if (granted) {
-            onRequestPermission(true)
+        val granted = ContextCompat.checkSelfPermission(
+            context, permission
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!granted) {
+            launcher.launch(permission) //Pedir permiso
         } else {
-            launcher.launch(permission)
+            onPermissionResult(true)
         }
     }
 
-    // Dialogo para ir a Configuración
     if (showSettingsDialog) {
         CustomGoToSettingsDialog(
             context = context,
-            title = "Permiso para usar la cámara",
-            message = "Para poder leer códigos QR, la App necesita el permiso para usar la cámara."
+            title = "Permiso requerido",
+            message = "Necesitamos acceso a la cámara para leer QR."
         ) {
             showSettingsDialog = false
         }
