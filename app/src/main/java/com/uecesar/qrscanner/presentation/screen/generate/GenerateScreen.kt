@@ -1,5 +1,6 @@
 package com.uecesar.qrscanner.presentation.screen.generate
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,9 +29,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -39,6 +42,7 @@ import com.uecesar.qrscanner.domain.model.QrCodeContent
 import com.uecesar.qrscanner.presentation.components.CustomAppBar
 import com.uecesar.qrscanner.presentation.components.TextForm
 import com.uecesar.qrscanner.presentation.ui.enumerable.QrCodeType
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,45 +75,16 @@ fun GenerateScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-            item {
-                FilterChipList(selectedType, viewModel)
-            }
-            item {
-                when (selectedType) {
-                    QrCodeType.TEXT -> TextForm(
-                        keyboardType = KeyboardType.Text,
-                        label = "Texto"
-                    ) { content ->
-                        viewModel.generateQrCode(QrCodeContent.Text(content))
-                    }
-                    QrCodeType.PHONE -> TextForm(
-                        keyboardType = KeyboardType.Phone,
-                        label = "Número de teléfono"
-                    ) { number ->
-                        viewModel.generateQrCode(QrCodeContent.Phone(number))
-                    }
-                    QrCodeType.URL -> TextForm(
-                        keyboardType = KeyboardType.Uri,
-                        label = "URL"
-                    ) { url ->
-                        viewModel.generateQrCode(QrCodeContent.Url(url))
-                    }
-                }
-            }
-            item {
-                when (val state = uiState) {
-                    is GenerateUiState.Loading -> { LoadingState() }
-                    is GenerateUiState.Success -> { SuccessState(state) }
-                    is GenerateUiState.Error -> { ErrorState(state) }
-                    else -> {}
-                }
-            }
+            item { FilterChipList(selectedType, viewModel) }
+            item { InputForm(selectedType, viewModel) }
+            item { ShowQRGenerated(uiState) }
+            item { ShowTemporaryState(uiState, viewModel) }
         }
     }
 }
 
 @Composable
-private fun FilterChipList( selectedType: QrCodeType, viewModel: GenerateViewModel){
+private fun FilterChipList(selectedType: QrCodeType, viewModel: GenerateViewModel){
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -130,6 +105,72 @@ private fun FilterChipList( selectedType: QrCodeType, viewModel: GenerateViewMod
                     )
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun InputForm(selectedType: QrCodeType, viewModel: GenerateViewModel){
+    when (selectedType) {
+        QrCodeType.TEXT -> TextForm(
+            keyboardType = KeyboardType.Text,
+            label = "Texto"
+        ) { content ->
+            viewModel.generateQrCode(QrCodeContent.Text(content))
+        }
+        QrCodeType.PHONE -> TextForm(
+            keyboardType = KeyboardType.Phone,
+            label = "Número de teléfono"
+        ) { number ->
+            viewModel.generateQrCode(QrCodeContent.Phone(number))
+        }
+        QrCodeType.URL -> TextForm(
+            keyboardType = KeyboardType.Uri,
+            label = "URL"
+        ) { url ->
+            viewModel.generateQrCode(QrCodeContent.Url(url))
+        }
+    }
+}
+
+@Composable
+private fun ShowQRGenerated(state: GenerateUiState) {
+
+    if (state is GenerateUiState.Success){
+        Image(
+            bitmap = state.qrCode.bitmap!!.asImageBitmap(),
+            contentDescription = "QR",
+            modifier = Modifier.size(260.dp)
+        )
+    }
+}
+
+@Composable
+private fun ShowTemporaryState(state: GenerateUiState, viewModel: GenerateViewModel){
+
+    val showTemporaryState by viewModel.showTemporaryState
+
+    LaunchedEffect(state) {
+        viewModel.onShowTemporaryStateChange(true)
+        delay(5000)
+        viewModel.onShowTemporaryStateChange(false)
+    }
+
+    if (showTemporaryState) {
+        when (state) {
+            is GenerateUiState.Loading -> {
+                LoadingState()
+            }
+
+            is GenerateUiState.Success -> {
+                SuccessState(state)
+            }
+
+            is GenerateUiState.Error -> {
+                ErrorState(state)
+            }
+
+            else -> {}
         }
     }
 }

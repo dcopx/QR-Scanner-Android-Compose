@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.uecesar.qrscanner.domain.model.QrCode
 import com.uecesar.qrscanner.domain.useCase.ScanQrCodeUseCase
+import com.uecesar.qrscanner.presentation.ui.enumerable.QrCodeType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,15 +42,23 @@ class ScannerViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = ScannerUiState.Loading
 
-            scanQrCodeUseCase(content)
-                .onSuccess { qrCode ->
-                    _uiState.value = ScannerUiState.Success(qrCode)
-                }
-                .onFailure { error ->
-                    _uiState.value = ScannerUiState.Error(
-                        error.message ?: "Unknown error occurred"
-                    )
-                }
+            delay(2000)
+            val qrCode = QrCode(
+                id = "3",
+                content = content,
+                type = QrCodeType.TEXT,
+                isGenerated = false
+            )
+            _uiState.value = ScannerUiState.Success(qrCode)
+//            scanQrCodeUseCase(content)
+//                .onSuccess { qrCode ->
+//                    _uiState.value = ScannerUiState.Success(qrCode)
+//                }
+//                .onFailure { error ->
+//                    _uiState.value = ScannerUiState.Error(
+//                        error.message ?: "Unknown error occurred"
+//                    )
+//                }
         }
     }
 

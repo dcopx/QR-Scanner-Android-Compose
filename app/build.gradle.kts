@@ -111,6 +111,9 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.tink.android)
 
+    //generar QR Local
+    implementation(libs.core)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

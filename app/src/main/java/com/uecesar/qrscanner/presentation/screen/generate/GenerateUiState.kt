@@ -1,5 +1,6 @@
 package com.uecesar.qrscanner.presentation.screen.generate
 
+import android.graphics.Bitmap
 import com.uecesar.qrscanner.domain.model.QrCode
 
 sealed class GenerateUiState {

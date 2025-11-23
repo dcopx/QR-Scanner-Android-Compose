@@ -110,9 +110,16 @@ class SecurityValidator @Inject constructor() {
 
     private fun containsCommandInjection(content: String): Boolean {
         val commandPatterns = listOf(
-            "(?i)(||;|&|`|$(|\\{)",
-            "(?i)(rm|del|format|mkfs|dd|cat|grep|awk|sed|curl|wget)",
-            "(?i)(>|<|>>|<<)"
+            // Operadores de shell
+            "(;|&&|\\|\\|)",
+            // Subshel
+            "\\$\\(",
+            // Backtick
+            "`",
+            // Redirecciones
+            "(>|<|>>|<<)",
+            // Separadores sospechosos tipo pipe
+            "(?<![A-Za-z0-9])\\|(?![A-Za-z0-9])"
         )
         return commandPatterns.any { Pattern.compile(it).matcher(content).find() }
     }

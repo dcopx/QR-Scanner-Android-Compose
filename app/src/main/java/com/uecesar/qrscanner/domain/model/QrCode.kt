@@ -1,5 +1,6 @@
 package com.uecesar.qrscanner.domain.model
 
+import android.graphics.Bitmap
 import com.uecesar.qrscanner.presentation.ui.enumerable.QrCodeType
 
 data class QrCode(
@@ -8,7 +9,8 @@ data class QrCode(
     val type: QrCodeType,
     val timestamp: Long = System.currentTimeMillis(),
     val isGenerated: Boolean = false,
-    val userId: String? = null
+    val userId: String? = null,
+    val bitmap: Bitmap? = null
 )
 
 val qrCodesResponse: List<QrCode> = listOf(

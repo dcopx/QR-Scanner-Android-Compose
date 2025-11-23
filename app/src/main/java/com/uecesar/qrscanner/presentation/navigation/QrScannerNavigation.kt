@@ -10,7 +10,7 @@ import com.uecesar.qrscanner.presentation.screen.history.HistoryScreen
 import com.uecesar.qrscanner.presentation.screen.scanner.ScannerScreen
 
 @Composable
-fun QrScannerApp() {
+fun QrScannerNavigation() {
     val navController = rememberNavController()
 
     CompositionLocalProvider( LocalNavController provides navController ) {
