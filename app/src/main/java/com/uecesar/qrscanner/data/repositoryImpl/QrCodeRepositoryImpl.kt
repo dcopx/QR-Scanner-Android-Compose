@@ -1,6 +1,6 @@
 package com.uecesar.qrscanner.data.repositoryImpl
 
-import com.example.qrscanner.domain.model.LoginRequest
+import com.uecesar.qrscanner.domain.model.LoginRequest
 import com.uecesar.qrscanner.data.remote.api.QrCodeApi
 import com.uecesar.qrscanner.domain.model.PaginatedResponse
 import com.uecesar.qrscanner.domain.model.QrCode

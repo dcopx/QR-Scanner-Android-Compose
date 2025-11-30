@@ -1,7 +1,7 @@
 package com.uecesar.qrscanner.data.remote.api
 
-import com.example.qrscanner.domain.model.LoginRequest
-import com.example.qrscanner.domain.model.LoginResponse
+import com.uecesar.qrscanner.domain.model.LoginRequest
+import com.uecesar.qrscanner.domain.model.LoginResponse
 import com.uecesar.qrscanner.domain.model.ApiResponse
 import com.uecesar.qrscanner.domain.model.PaginatedResponse
 import com.uecesar.qrscanner.domain.model.QrCode
